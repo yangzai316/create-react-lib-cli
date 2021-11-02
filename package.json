@@ -1,8 +1,8 @@
 {
   "name": "create-react-lib-cli",
-  "version": "1.0.0",
-  "description": "创建react 组件开发的脚手架",
-  "main": "index.js",
+  "version": "1.0.1",
+  "description": "create react component library cli",
+  "main": "",
   "bin": {
     "react-cli": "./bin/www"
   },
@@ -11,9 +11,13 @@
     "type": "git",
     "url": "git+https://github.com/yangzaiwangzi/create-react-lib-cli.git"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "cli",
+    "react",
+    "react-library"
+  ],
+  "author": "cunyang",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/yangzaiwangzi/create-react-lib-cli/issues"
   },
