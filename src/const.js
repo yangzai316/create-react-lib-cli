@@ -1,5 +1,6 @@
-
-const licenses = ["Academic Free License v3.0",
+const path = require('path');
+const licenses = [
+    "Academic Free License v3.0",
     "Apache license 2.0",
     "Artistic license 2.0",
     "Boost Software License 1.0",
@@ -32,5 +33,34 @@ const licenses = ["Academic Free License v3.0",
     "SIL Open Font License 1.1",
     "University of Illinois/NCSA Open Source License",
     "The Unlicense",
-    "zLib License"];
+    "zLib License"
+];
+
+const templateConfig = {
+    package: {
+        path: path.join(__dirname, `./../templates/package.json.template`),
+        to: `/package.json`
+    },
+    webpackConfig: {
+        path: path.join(__dirname, `./../templates/webpack.config.js.template`),
+        to: `/webpack.config.js`
+    },
+    index: {
+        path: path.join(__dirname, `./../templates/index.js.template`),
+        to: `/index.js`
+    },
+    src_index: {
+        path: path.join(__dirname, `./../templates/src_index.js.template`),
+        to: `/src/index.js`
+    },
+    example_src_App: {
+        path: path.join(__dirname, `./../templates/example_src_App.js.template`),
+        to: `/example/src/App.js`
+    },
+    example_package: {
+        path: path.join(__dirname, `./../templates/example_package.json.template`),
+        to: `/example/package.json`
+    },
+};
 exports.licenses = licenses;
+exports.templateConfig = templateConfig;

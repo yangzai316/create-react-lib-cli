@@ -1,0 +1,11 @@
+import React from 'react';
+import <%= componentName %> from '<%= name %>'
+
+const App = () => {
+    return (
+        <<%= componentName %>></<%= componentName %>>
+    )
+};
+
+
+export default App;

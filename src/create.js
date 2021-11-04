@@ -6,8 +6,9 @@ const chalk = require('chalk');
 const ora = require('ora');
 const downloadGitRepo = require('download-git-repo');
 const download = promisify(downloadGitRepo);
-const { licenses } = require('./const.js');
+const { licenses, templateConfig } = require('./const.js');
 const ejs = require('ejs');
+const { ejsRenderFile } = require('./utils.js');
 
 module.exports = async (args) => {
     const projectName = args[0];
@@ -55,40 +56,51 @@ const inBaseInfo = async (projectName) => {
             default: 'MIT'
         }
     ]).then(data => {
+        data?.name && (data.componentName = data.name.charAt(0).toUpperCase() + data.name.slice(1));
+
         renderFile(projectName, data);
     });
 };
 // 通过模版内容写文件
 const renderFile = (projectName, data) => {
-    const filename = path.join(__dirname, `./../templates/package.json`);
 
-    ejs.renderFile(filename, data, {}, function (err, str) {
-        if (err) return console.log(chalk.red('ejs ERROR :', err));
-        inDownload(projectName, str);
-    });
+    const promiseArr = [];
+    for (const key in templateConfig) {
+        const item = templateConfig[key];
+        promiseArr.push(ejsRenderFile(item.path, data, {}, key))
+    };
+
+    Promise.all(promiseArr)
+        .then(res => {
+            inDownload(projectName, res);
+        }).catch(err => {
+            console.log(chalk.red('ejs ERROR :', err));
+        });
+
 }
 
 // 从远程下载项目模版
-const inDownload = async (projectName, str) => {
-
-    const loading = ora('downloading ...');// 设置loading效果
+const inDownload = async (projectName, templateData) => {
+    const loading = ora('createing ...');// 设置loading效果
 
     loading.start();// 开始loading
     try {
         const data = await download('github.com:yangzaiwangzi/react-library-cli-template#main', projectName);
-        fs.writeFileSync(`${process.cwd()}/${projectName}/package.json`, str);
-        loading.succeed('downloading success');// 结束loading
+        for (const item of templateData) {
+            fs.writeFileSync(`${process.cwd()}/${projectName}${templateConfig[item.name].to}`, item.data);
+        }
+        loading.succeed('create success ！！！');// 结束loading
+        console.log('------------------------------------------------')
+        console.log('   You can :');
+        console.log('   to start your component code');
+        console.log(`       cd ${projectName}/`);
+        console.log('       npm install');
+        console.log('       npm start');
         console.log('')
-        console.log('You can :');
-        console.log(`   cd ${projectName}`);
-        console.log('   npm install');
-        console.log('   npm start');
-        console.log('to start your component code');
-        console.log('')
-        console.log(`   cd ${projectName}/example`);
-        console.log('   npm install');
-        console.log('   npm run dev');
-        console.log('to run your component example in the browser.');
+        console.log('   to run your component example in the browser.');
+        console.log(`       cd ${projectName}/example/`);
+        console.log('       npm install');
+        console.log('       npm run dev');
         console.log('')
     } catch (error) {
         loading.fail('downloading fatal：'); // 结束loading 
